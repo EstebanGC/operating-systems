@@ -1,59 +1,77 @@
-# Operating Systems Labs: Concurrent Traffic Control System (SIGET)
+# Laboratorios de Sistemas Operativos: Sistema de Control de Tráfico Concurrente (SIGET)
 
-This repository contains two Python implementations demonstrating the **Producer-Consumer Problem** with a **Bounded Buffer**, simulated through an **Intelligent Traffic Management System (SIGET)**.
+* **Institución:** Institución Universitaria Pascual Bravo
+* **Curso:** Sistemas Operativos
 
----
-
-## 🔬 Overview & Problem Statement
-
-In a smart city infrastructure, multiple roadside sensors (Producers) continuously collect real-time traffic flow data (vehicle count and average speed) across various intersections. Simultaneously, analysis modules (Consumers) consume this data to evaluate road congestion and route traffic efficiently.
-
-To prevent race conditions, memory overflow, or data loss, both implementations enforce strict synchronization mechanisms over a shared bounded buffer.
+Este repositorio contiene dos implementaciones en Python que demuestran la solución al problema clásico del Productor-Consumidor con un Búfer Acotado, simulado a través de un Sistema Inteligente de Gestión de Tráfico (SIGET).
 
 ---
 
-## 🛠 Project Implementations
+## Resumen y Descripción del Problema
 
-### Project 1: Explicit Synchronization via Semaphores
-* **Focus:** Low-level concurrency control & operating system primitives.
-* **Synchronization Primitives:**
-  * `mutex` (`threading.Semaphore(1)`): Guarantees mutual exclusion when accessing the shared buffer (`deque`).
-  * `empty_slots` (`threading.Semaphore(BUFFER_SIZE)`): Tracks available slots, blocking producers when the buffer reaches capacity (5 items).
-  * `full_slots` (`threading.Semaphore(0)`): Tracks available readings, blocking consumers when the buffer is empty.
-  * `exit_event` (`threading.Event`): Coordinates a **graceful shutdown**, waking waiting consumers when all sensors complete their readings.
+En la infraestructura de una ciudad inteligente, múltiples sensores ubicados en las vías (Productores) recolectan continuamente métricas del flujo vehicular en tiempo real (conteo de vehículos y velocidad promedio) en varias intersecciones. Simultáneamente, los módulos de análisis (Consumidores) procesan dicha información para evaluar la congestión vial y sugerir rutas de tráfico eficientes.
 
-### Project 2: High-Level Abstraction via Thread-Safe Queue
-* **Focus:** Idiomatic, high-level Python concurrency using `queue.Queue`.
-* **Synchronization Mechanism:**
-  * Replaces explicit semaphores with `queue.Queue`, which internally handles locking and condition variables.
-  * Utilizes `Sentinel Values` (e.g., `None` tokens) to notify worker threads when no further data will be produced.
-  * Simplifies thread coordination and minimizes manual locking logic while preserving identical functional throughput.
+Para prevenir condiciones de carrera (race conditions), desbordamiento de memoria o pérdida de datos, ambas implementaciones aplican mecanismos strictly controlados de sincronización sobre un búfer compartido con capacidad limitada.
 
 ---
 
-## 🚀 Key Architectural Features
+## Implementaciones del Proyecto
 
-* **Decoupled Processing:** Data acquisition by sensors occurs independently of analytical processing.
-* **Optimized Critical Sections:** Heavy computational tasks (such as simulated network delays or status evaluation) are executed outside critical sections to maximize parallel CPU utilization.
-* **Graceful Thread Termination:** Both projects ensure zero memory leaks, preventing thread starvation or infinite blocking upon workload completion.
+### Proyecto 1: Sincronización Explícita mediante Semáforos
+* Enfoque: Control de concurrencia a bajo nivel utilizando primitivas del sistema operativo.
+* Primitivas de sincronización utilizadas:
+  * mutex (threading.Semaphore(1)): Garantiza la exclusión mutua al acceder al búfer compartido (deque).
+  * empty_slots (threading.Semaphore(BUFFER_SIZE)): Rastrea las casillas disponibles, bloqueando a los sensores cuando la cola alcanza su capacidad máxima de 5 elementos.
+  * full_slots (threading.Semaphore(0)): Rastrea las lecturas disponibles, bloqueando a los analistas cuando la cola está vacía.
+  * exit_event (threading.Event): Coordina el cierre limpio (graceful shutdown), despertando a los consumidores en espera una vez que todos los sensores finalizan sus lecturas.
+
+### Proyecto 2: Abstracción a Alto Nivel mediante queue.Queue
+* Enfoque: Concurrencia idiomática a alto nivel en Python utilizando la clase queue.Queue.
+* Mecanismo de sincronización:
+  * Reemplaza los semáforos manuales por queue.Queue, la cual gestiona internamente los bloqueos de exclusión mutua y variables de condición.
+  * Utiliza valores centinela (tokens de cierre) para notificar a los hilos de trabajo cuando no hay más datos por producir.
+  * Simplifica la lógica de coordinación de hilos mientras mantiene exactamente el mismo rendimiento funcional.
 
 ---
 
-## 📊 Performance & Execution Metrics
+## Demostraciones en Video (YouTube)
 
-| Feature | Project 1 (Semaphores) | Project 2 (`queue.Queue`) |
-| :--- | :--- | :--- |
-| **Buffer Capacity** | 5 items (`deque`) | 5 items (`queue.Queue`) |
-| **Producers (Sensors)** | 3 active threads | 3 active threads |
-| **Consumers (Analyzers)** | 2 active threads | 2 active threads |
-| **Control Style** | Explicit OS Primitives | Encapsulated / High-Level |
-| **Shutdown Strategy** | `Event` + Semaphore Release | Sentinel Token Passing |
+* Simulación de planificación de proyectos: https://youtu.be/DGT9toltn_s
+* Implementación de concurrencia de módulos: https://youtu.be/SCoEuFR63T4
 
 ---
 
-## 💻 How to Run
+## Características Arquitectónicas Clave
 
-1. Clone the repository:
-   ```bash
-   git clone [https://github.com/EstebanGC/operating-systems.git](https://github.com/EstebanGC/operating-systems.git)
+* Desacoplamiento Operativo: La recolección de datos por parte de los sensores ocurre de forma independiente al análisis computacional.
+* Optimización de Secciones Críticas: Las tareas computacionales pesadas (como retardos simulados de red o evaluación del estado del tráfico) se ejecutan fuera de la sección crítica para maximizar el uso paralelo de la CPU.
+* Finalización Limpia de Hilos: Ambos proyectos garantizan la ausencia de bloqueos indefinidos o inanición de hilos (thread starvation) al completar la carga de trabajo.
+
+---
+
+## Métricas de Ejecución y Comparación
+
+* Capacidad del búfer: 5 elementos (deque / queue.Queue)
+* Productores (Sensores): 3 hilos activos
+* Consumidores (Analizadores): 2 hilos activos
+* Estilo de control: Primitivas explícitas de SO vs. Encapsulado de alto nivel
+* Estrategia de finalización: Event + Liberación de semáforos vs. Tokens centinela
+
+---
+
+## Instrucciones de Ejecución
+
+1. Clonar el repositorio:
+   git clone https://github.com/EstebanGC/operating-systems.git
    cd operating-systems
+
+2. Ejecutar la implementación con Semáforos:
+   python project1_semaphores.py
+
+3. Ejecutar la implementación con Queue:
+   python project2_queue.py
+
+---
+
+## Licencia e Información Académica
+Este proyecto es de código abierto y está destinado a fines académicos y educativos para el curso de Sistemas Operativos de la Institución Universitaria Pascual Bravo.
