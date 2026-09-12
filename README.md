@@ -1,4 +1,4 @@
-# Laboratorios de Sistemas Operativos: Sistema de Control de Tráfico Concurrente (SIGET)
+# Sistemas Operativos: Sistema de Control de Tráfico Concurrente (SIGET)
 
 * **Institución:** Institución Universitaria Pascual Bravo
 * **Curso:** Sistemas Operativos
